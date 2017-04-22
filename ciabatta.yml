@@ -1,0 +1,32 @@
+# This recipe is transcribed from "Ciabatta" by Adam D. Zolkover:
+# http://www.twice-cooked.com/2012/04/09/ciabatta/
+# It is available under a CC BY-NC-SA 4.0 International license:
+# https://creativecommons.org/licenses/by-nc-sa/4.0/
+- section_name: "Night before"
+  ingredients:
+    - ingredient: "yeast"
+      amount: 0.5
+      unit: "tsp"
+    - ingredient: "whole wheat flour"
+      amount: 50
+      unit: "g"
+    - ingredient: "unbleached all purpose flour"
+      amount: 100
+      unit: "g"
+    - ingredient: "water"
+      amount: 300
+      unit: "g"
+- section_name: "Day of"
+  ingredients:
+    - ingredient: "water"
+      amount: 130
+      unit: "g"
+    - ingredient: "unbleached all purpose flour"
+      amount: 400
+      unit: "g"
+    - ingredient: "extra virgin olive oil"
+      amount: 15
+      unit: "g"
+    - ingredient: "salt"
+      amount: 1.5
+      unit: "tsp"

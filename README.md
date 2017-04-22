@@ -8,6 +8,6 @@ baking bread.
 
 In baking bread, one often has to scale recipes up and down to optimize them
 for a given pan. This gets annoying to do manually.  Given a file with
-ingredients and amounts in an ergonomic (TBD) format and a positive real
-scaling factor at the command line, pretty-print a scaled recipe that shows
-quantities to a limited number of significant digits.
+ingredients and amounts in an ergonomic YAML format (example `ciabatta.yml`
+here) and a positive real scaling factor at the command line, pretty-print a
+scaled recipe that shows quantities to a limited number of significant digits.
