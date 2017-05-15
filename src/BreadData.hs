@@ -1,3 +1,5 @@
+module BreadData where
+
 -- Example: IngredientRecord "Bread Flour" 100.0 "g"
 type IngredientName = String
 type Amount = Float
