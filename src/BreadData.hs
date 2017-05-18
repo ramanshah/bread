@@ -1,12 +1,33 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module BreadData where
 
--- Example: IngredientRecord "Bread Flour" 100.0 "g"
-type IngredientName = String
-type Amount = Float
-type Unit = String
-data IngredientRecord = IngredientRecord IngredientName Amount Unit
-                      deriving (Show, Eq)
+import qualified Data.Yaml as Y
+import Data.Yaml (FromJSON(..), (.:))
+import Control.Applicative
 
-scale :: IngredientRecord -> Float -> IngredientRecord
-scale (IngredientRecord name amt unit) scaleFactor =
-  (IngredientRecord name (amt * scaleFactor) unit)
+data IngredientRecord =
+  IngredientRecord {
+    ingredientName :: String
+  , amount :: Float
+  , unit :: String
+  } deriving (Eq, Show)
+
+instance Y.FromJSON IngredientRecord where
+  parseJSON (Y.Object v) =
+    IngredientRecord <$>
+    v .: "ingredientName" <*>
+    v .: "amount" <*>
+    v .: "unit"
+
+data Section =
+  Section {
+    sectionName :: String
+  , ingredients :: [IngredientRecord]
+  } deriving (Eq, Show)
+
+instance Y.FromJSON Section where
+  parseJSON (Y.Object v) =
+    Section <*>
+    v .: "section_name" <*>
+    v .: "ingredients"
