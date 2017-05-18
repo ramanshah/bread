@@ -16,7 +16,7 @@ data IngredientRecord =
 instance Y.FromJSON IngredientRecord where
   parseJSON (Y.Object v) =
     IngredientRecord <$>
-    v .: "ingredientName" <*>
+    v .: "ingredient" <*>
     v .: "amount" <*>
     v .: "unit"
 
@@ -28,6 +28,6 @@ data Section =
 
 instance Y.FromJSON Section where
   parseJSON (Y.Object v) =
-    Section <*>
+    Section <$>
     v .: "section_name" <*>
     v .: "ingredients"
