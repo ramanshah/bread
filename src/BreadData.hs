@@ -4,9 +4,14 @@
 
 module BreadData where
 
+import qualified Data.ByteString.Char8 as BS
 import qualified Data.Yaml as Y
 import Data.Yaml (FromJSON(..), (.:))
 import Control.Applicative
+
+-- Parse YAML to our data structure
+yamlToBreadData :: String -> Either String [Section]
+yamlToBreadData recipeYaml = Y.decodeEither $ BS.pack recipeYaml
 
 data IngredientRecord =
   IngredientRecord {

@@ -3,7 +3,6 @@
 module Main where
 
 import Control.Applicative
-import qualified Data.ByteString.Char8 as BS
 import qualified Data.Yaml as Y
 import System.Environment
 import System.Exit
@@ -11,6 +10,16 @@ import Text.Read
 
 import BreadData
 import BreadUtils
+
+-- Error-check scale factor
+readScaleFactor :: String -> Either String Float
+readScaleFactor s = case result of
+  Left s -> Left msg
+  Right x -> if (x >= 0.0)
+               then Right x
+               else Left msg
+  where result = readEither s :: Either String Float
+        msg = "Scale factor must be a non-negative floating point number."
 
 -- Provide unified way to deal with bad input via the Either monad
 printIfError :: Either String a -> IO a
@@ -26,19 +35,6 @@ checkArgLength as x
   | otherwise = do
       putStrLn "Usage: bread path/to/recipe.yml scale_factor"
       exitWith (ExitFailure 1)
-
--- Error-check scale factor
-readScaleFactor :: String -> Either String Float
-readScaleFactor s = case result of
-  Left s -> Left msg
-  Right x -> if (x >= 0.0)
-               then Right x
-               else Left msg
-  where result = readEither s :: Either String Float
-        msg = "Scale factor must be a non-negative floating point number."
-
-yamlToBreadData :: String -> Either String [Section]
-yamlToBreadData recipeYaml = Y.decodeEither $ BS.pack recipeYaml
 
 main :: IO ()
 main = do
