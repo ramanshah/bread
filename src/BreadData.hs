@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Types and parsers for reading a recipe into Haskell.
+
 module BreadData where
 
 import qualified Data.Yaml as Y
