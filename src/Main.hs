@@ -2,11 +2,12 @@
 
 module Main where
 
-import qualified Data.Yaml as Y
-import qualified Data.ByteString.Char8 as BS
 import Control.Applicative
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.Yaml as Y
 import System.Environment
 import System.Exit
+import Text.Read
 
 import BreadData
 import BreadUtils
@@ -18,15 +19,35 @@ printIfError (Left s) = do
   exitWith (ExitFailure 1)
 printIfError (Right x) = return x
 
+-- Error-check argument list
+checkArgLength :: [String] -> Int -> IO ()
+checkArgLength as x
+  | length as == x = return ()
+  | otherwise = do
+      putStrLn "Usage: bread path/to/recipe.yml scale_factor"
+      exitWith (ExitFailure 1)
+
+-- Error-check scale factor
+readScaleFactor :: String -> Either String Float
+readScaleFactor s = case result of
+  Left s -> Left msg
+  Right x -> if (x >= 0.0)
+               then Right x
+               else Left msg
+  where result = readEither s :: Either String Float
+        msg = "Scale factor must be a non-negative floating point number."
+
+yamlToBreadData :: String -> Either String [Section]
+yamlToBreadData recipeYaml = Y.decodeEither $ BS.pack recipeYaml
+
 main :: IO ()
 main = do
   -- Read in command-line arguments: source YAML and scale factor
   args <- getArgs
+  checkArgLength args 2
   recipeYaml <- readFile $ args !! 0
-  scaleFactor <- return (read (args !! 1) :: Float)
+  scaleFactor <- printIfError $ readScaleFactor $ args !! 1
 
-  recipe <- printIfError ((Y.decodeEither $
-    BS.pack recipeYaml) :: Either String [Section])
-
+  recipe <- printIfError $ yamlToBreadData recipeYaml
   print $ scaleRecipe scaleFactor recipe
   exitWith ExitSuccess
