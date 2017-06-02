@@ -10,7 +10,7 @@ import Data.Yaml (FromJSON(..), (.:))
 import Control.Applicative
 
 -- Parse YAML to our data structure
-yamlToBreadData :: String -> Either String [Section]
+yamlToBreadData :: String -> Either String Recipe
 yamlToBreadData recipeYaml = Y.decodeEither $ BS.pack recipeYaml
 
 data IngredientRecord =
@@ -38,3 +38,5 @@ instance Y.FromJSON Section where
     Section <$>
     v .: "section_name" <*>
     v .: "ingredients"
+
+type Recipe = [Section]

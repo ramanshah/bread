@@ -15,5 +15,5 @@ scaleSection k (Section {sectionName = s, ingredients = i}) =
   Section {sectionName = s, ingredients = (map (scale k) i)}
 
 -- Scale the amounts in a whole recipe.
-scaleRecipe :: Float -> [Section] -> [Section]
+scaleRecipe :: Float -> Recipe -> Recipe
 scaleRecipe k sections = map (scaleSection k) sections
