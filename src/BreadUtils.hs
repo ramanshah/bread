@@ -2,7 +2,11 @@
 
 module BreadUtils where
 
+-- TODO: eliminate printf
 import Text.Printf
+import Data.Ratio
+import Formatting
+import qualified Data.Text.Lazy as L
 import BreadData
 
 type RecipeFieldLengths = [Int]
@@ -25,7 +29,7 @@ scaleRecipe k sections = map (scaleSection k) sections
 render :: RecipeFieldLengths -> IngredientRecord -> String
 render [x, y, z] record =
   printf formatString (ingredientName record)
-    (renderAmount $ amount record)
+    (renderAmount 3 $ amount record)
     (unit record)
     where
       formatString = "%-" ++ show x ++ "s %" ++
@@ -45,14 +49,24 @@ renderRecipe sections =
       where fieldLengths = [28, 1, 3]
 
 -- Render numerical quantities sensibly: one wants to render as few significant
--- digits as possible while keeping n significant digits of accuracy.
--- e.g. 0.0     => "0"
+-- digits as possible while keeping n significant digits of accuracy. The
+-- Formatting library does the heavy lifting here, but we have to do the sigfig
+-- computation.
+-- e.g. for three significant digits:
+--      0.0     => "0"
 --      23.4601 => "23.5"
 --      1500    => "1500"
 --      0.04659 => "0.0466"
-renderAmount :: Float -> String
-renderAmount 0.0 = "0"
-renderAmount x = show x
+renderAmount :: Int -> Float -> String
+renderAmount _ 0.0 = "0"
+renderAmount sigFigs x = L.unpack $ format shortest $ roundSigFig sigFigs x
+
+roundSigFig :: Int -> Float -> Rational
+roundSigFig sigFigs x
+  | k >= 0 = (round $ x * (10 ^ k)) Data.Ratio.% (10 ^ k)
+  | k < 0  = (round $ x / (10.0 ^ (-k))) * (10 ^ (-k)) Data.Ratio.% 1
+    where
+      k = sigFigs - (floor $ logBase 10 $ abs x) - 1
 
 -- To demarcate information in the rendered recipe
 dashes :: RecipeFieldLengths -> String

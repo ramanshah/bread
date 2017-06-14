@@ -22,3 +22,4 @@ executable bread
                      , bytestring
                      , yaml
                      , text
+                     , formatting
