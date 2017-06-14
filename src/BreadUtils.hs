@@ -4,8 +4,8 @@ module BreadUtils where
 
 -- TODO: eliminate printf
 import Text.Printf
-import Data.Ratio
-import Formatting
+import qualified Data.Ratio as R
+import qualified Formatting as F
 import qualified Data.Text.Lazy as L
 import BreadData
 
@@ -48,25 +48,33 @@ renderRecipe sections =
     [dashes fieldLengths]
       where fieldLengths = [28, 1, 3]
 
--- Render numerical quantities sensibly: one wants to render as few significant
--- digits as possible while keeping n significant digits of accuracy. The
--- Formatting library does the heavy lifting here, but we have to do the sigfig
--- computation.
--- e.g. for three significant digits:
+-- Render numerical quantities to strings sensibly: one wants to render as few
+-- significant digits as possible while keeping n significant digits of
+-- accuracy. Rendering as few significant digits as possible is provided by the
+-- Formatting library.
+--
+-- For three significant digits (renderAmount 3 x):
 --      0.0     => "0"
 --      23.4601 => "23.5"
 --      1500    => "1500"
 --      0.04659 => "0.0466"
 renderAmount :: Int -> Float -> String
 renderAmount _ 0.0 = "0"
-renderAmount sigFigs x = L.unpack $ format shortest $ roundSigFig sigFigs x
+renderAmount sigFigs x = L.unpack $ F.format F.shortest $ roundSigFig sigFigs x
 
+-- Round to requested number of significant digits. If the number of
+-- significant digits is greater than or equal to the place of the most
+-- significant digit, move the decimal to the right the correct number of
+-- places; round to an integer; then move it left. In the other case, move the
+-- decimal to the left; round off; then move it right. Use the Rational type so
+-- these both cleanly render.
 roundSigFig :: Int -> Float -> Rational
 roundSigFig sigFigs x
-  | k >= 0 = (round $ x * (10 ^ k)) Data.Ratio.% (10 ^ k)
-  | k < 0  = (round $ x / (10.0 ^ (-k))) * (10 ^ (-k)) Data.Ratio.% 1
+  | k >= 0 = (round $ x * (10 ^ k)) R.% (10 ^ k)
+  | k < 0  = (round $ x / (10.0 ^ (-k))) * (10 ^ (-k)) R.% 1
     where
-      k = sigFigs - (floor $ logBase 10 $ abs x) - 1
+      k = sigFigs - placeOfLeadingDigit
+      placeOfLeadingDigit = (floor $ logBase 10 $ abs x) + 1
 
 -- To demarcate information in the rendered recipe
 dashes :: RecipeFieldLengths -> String
