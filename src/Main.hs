@@ -45,5 +45,5 @@ main = do
   scaleFactor <- printIfError $ readScaleFactor $ args !! 1
 
   recipe <- printIfError $ yamlToBreadData recipeYaml
-  mapM_ putStrLn $ renderRecipe $ scaleRecipe scaleFactor recipe
+  mapM_ putStrLn $ renderRecipe 3 $ scaleRecipe scaleFactor recipe
   exitWith ExitSuccess
