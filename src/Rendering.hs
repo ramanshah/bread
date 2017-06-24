@@ -1,12 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- Rendering a bread recipe.
 
 module Rendering where
 
--- TODO: eliminate printf
-import Text.Printf
 import qualified Data.Ratio as R
-import qualified Formatting as F
-import qualified Data.Text.Lazy as L
+import Formatting
 import BreadData
 
 type RecipeFieldLengths = (Int, Int, Int)
@@ -14,12 +13,13 @@ type RecipeFieldLengths = (Int, Int, Int)
 -- Render ingredient record into a line
 render :: Int -> RecipeFieldLengths -> IngredientRecord -> String
 render sigFigs (x, y, z) record =
-  printf formatString (ingredientName record)
-    (renderAmount sigFigs $ amount record)
-    (unit record)
-    where
-      formatString = "%-" ++ show x ++ "s %" ++
-        show y ++ "s %-" ++ show z ++ "s"
+    formatToString
+      ((right x ' ' %. string) % " " %
+       (left y ' ' %. string) % " " %
+       (right z ' ' %. string))
+      (ingredientName record)
+      (renderAmount sigFigs $ amount record)
+      (unit record)
 
 -- Render section into a sequence of lines
 renderSection :: Int -> RecipeFieldLengths -> Section -> [String]
@@ -46,7 +46,7 @@ renderRecipe sigFigs sections =
 --      0.04659 => "0.0466"
 renderAmount :: Int -> Float -> String
 renderAmount _ 0.0 = "0"
-renderAmount sigFigs x = L.unpack $ F.format F.shortest $ roundSigFig sigFigs x
+renderAmount sigFigs x = formatToString shortest $ roundSigFig sigFigs x
 
 -- Round to requested number of significant digits. If the number of
 -- significant digits is greater than or equal to the place of the most
