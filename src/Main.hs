@@ -9,7 +9,8 @@ import System.Exit
 import Text.Read
 
 import BreadData
-import BreadUtils
+import Scaling
+import Rendering
 
 -- Error-check scale factor
 readScaleFactor :: String -> Either String Float
