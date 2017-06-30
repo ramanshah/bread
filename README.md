@@ -33,20 +33,19 @@ quantities to a limited number of significant digits in a readable table
 format.
 
 Despite the name, this program is serviceable for all recipes; in particular,
-it may be of use in non-bread baking, candy making, and mixology---anywhere you
-make stuff with measured ingredients and are willing to have a computer handy.
+it may be of use in non-bread baking, candy making, mixology, soap making,
+routine chemical synthesis---anywhere you make stuff with measured ingredients
+and are willing to have a computer handy.
 
 ## Installation
 
-Let's be honest, the technology choices were driven by me needing a small
-Haskell learning project rather than a desire for easy installability for a
-wide audience. While I quite like having this program handy, you may be miffed
-by the amount of work, compilation time, and binary executable size for a
-program with such a minimal feature set. I'll add fine details once I help
-someone install this from a cold start, but installation from source proceeds
-roughly as follows:
+Installation from source using the Haskell Tool Stack proceeds as follows:
 
-1. Install Haskell Stack.
-1. Clone this repo.
-1. `stack build`
-1. `stack install`
+1. Install [Stack](https://docs.haskellstack.org/en/stable/README/). As
+   recommended in the Stack setup instructions, if you want `bread` to be
+   globally available, ensure that you've added `~/.local/bin` to your path.
+   In my `.zshrc`, I have `export PATH="${HOME}/.local/bin:${PATH}"`.
+1. Clone this repo in a convenient spot, then `cd bread`.
+1. `stack build`. This takes a long time the first time around.
+1. `stack install`.
+1. `cd doc/examples`, and try the above example!
