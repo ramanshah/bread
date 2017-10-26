@@ -6,7 +6,10 @@ module BreadData where
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Yaml as Y
-import Data.Yaml (FromJSON(..), (.:))
+import Data.Yaml ((.:))
+import qualified Data.Aeson.Types as A
+import Data.Aeson.Types ((.=))
+import Data.Monoid ((<>))
 import Control.Applicative
 
 -- Parse YAML to our data structure
@@ -27,6 +30,17 @@ instance Y.FromJSON IngredientRecord where
     v .: "amount" <*>
     v .: "unit"
 
+instance Y.ToJSON IngredientRecord where
+  toJSON v = Y.object $ [
+    "ingredient" .= ingredientName v,
+    "amount" .= amount v,
+    "unit" .= unit v]
+
+  toEncoding v = A.pairs $
+    "ingredient" .= ingredientName v <>
+    "amount" .= amount v <>
+    "unit" .= unit v
+
 data Section =
   Section {
     sectionName :: String
@@ -38,5 +52,14 @@ instance Y.FromJSON Section where
     Section <$>
     v .: "section_name" <*>
     v .: "ingredients"
+
+instance Y.ToJSON Section where
+  toJSON v = Y.object $ [
+    "section_name" .= sectionName v,
+    "ingredients" .= ingredients v]
+
+  toEncoding v = A.pairs $
+    "section_name" .= sectionName v <>
+    "ingredients" .= ingredients v
 
 type Recipe = [Section]
