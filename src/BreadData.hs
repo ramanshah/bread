@@ -16,6 +16,10 @@ import Control.Applicative
 yamlToBreadData :: String -> Either String Recipe
 yamlToBreadData recipeYaml = Y.decodeEither $ BS.pack recipeYaml
 
+-- Dump our data structure to YAML
+breadDataToYAML :: Recipe -> String
+breadDataToYAML recipe = BS.unpack $ Y.encode recipe
+
 data IngredientRecord =
   IngredientRecord {
     ingredientName :: String
